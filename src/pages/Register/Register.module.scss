@@ -1,0 +1,13 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid var(--black);
+    border-radius: 5px;
+}
+
+.register {
+    .input {
+        display: flex;
+    }
+}

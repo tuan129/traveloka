@@ -1,0 +1,191 @@
+.home {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 24px;
+}
+
+.wrapper {
+    background-color: var(--primary);
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding-bottom: 50px;
+}
+
+.banner {
+    width: 70%;
+    display: flex;
+    justify-content: center;
+    padding: 8px 0;
+
+    .title-banner {
+        color: var(--white);
+        padding-right: 8px;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        line-height: 28px;
+    }
+
+    .title-banner h1 {
+        font-size: 24px;
+        margin-bottom: 24px;
+    }
+
+    .title-banner h2 {
+        font-size: 20px;
+        opacity: var(--opacity);
+    }
+
+    img {
+        border-radius: 5px;
+    }
+}
+
+.next-link {
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 16px;
+    color: var(--white);
+    opacity: 0.8;
+    text-shadow: 0 2px 4px rgba(27, 27, 27, 0.2);
+    margin-top: 24px;
+    cursor: pointer;
+
+    &:hover {
+        opacity: 1;
+        text-decoration: underline;
+    }
+}
+
+.content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.find-ticket {
+    width: 960px;
+    box-shadow: 0px 2px 5px rgba(3, 18, 26, 0.15);
+}
+
+.ticket {
+    padding-top: 24px;
+    background-image: url(https://d1785e74lyxkqq.cloudfront.net/_next/static/v2/1/19d70f54525b8bd167113e49116b5c7d.png);
+    min-height: 300px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    position: relative;
+    border: 1px solid var(--primary);
+    border-radius: 10px;
+
+    .title-content {
+        width: fit-content;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--white);
+        border: 1px solid var(--white);
+        border-radius: 5px;
+        padding: 8px 16px;
+        margin-left: 24px;
+    }
+
+    .buy-ticket {
+        background-color: var(--white);
+        margin-top: 24px;
+        border-radius: 10px;
+        width: 100%;
+        min-height: 100px;
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+.info-customer {
+    display: flex;
+    margin-bottom: 24px;
+}
+
+.right-info {
+    display: flex;
+    width: 58.99%;
+    justify-content: space-around;
+
+    .from {
+        margin-top: 8px;
+        border-bottom: 1px solid rgba(205, 208, 209, 1);
+    }
+
+    .from .name-input {
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 20px;
+        color: rgba(104, 113, 118, 1);
+    }
+
+    .from input {
+        border: none;
+        // min-width: 190px;
+        padding: 8px 12px;
+        font-size: 16px;
+    }
+
+    .from .icon {
+        height: 15px;
+    }
+}
+
+.search-start h3 {
+    font-size: 14px;
+    color: rgb(3, 18, 26);
+    font-weight: 700;
+    line-height: 20px;
+}
+
+.right-info,
+.search-start {
+    min-width: 190px;
+}
+
+.left-info {
+    width: 41.01%;
+}
+
+.amount-cus {
+    margin-top: 8px;
+    border-bottom: 1px solid rgba(205, 208, 209, 1);
+
+    .name-input {
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 20px;
+        color: rgba(104, 113, 118, 1);
+    }
+
+    input {
+        border: none;
+        padding: 8px 60px 8px 12px;
+        font-size: 16px;
+    }
+
+    .icon {
+        height: 15px;
+    }
+}
+
+.btnFind {
+    max-width: 400px;
+    align-self: flex-end;
+    margin: 6px 24px;
+    margin-bottom: 18px;
+
+    .icon {
+        height: 15px;
+    }
+
+    &:hover {
+        opacity: var(--opacity);
+    }
+}
