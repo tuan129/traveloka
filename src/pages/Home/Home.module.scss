@@ -116,6 +116,7 @@
     .from {
         margin-top: 8px;
         border-bottom: 1px solid rgba(205, 208, 209, 1);
+        width: 240px;
     }
 
     .from .name-input {
@@ -127,8 +128,7 @@
 
     .from input {
         border: none;
-        // min-width: 190px;
-        padding: 8px 12px;
+        padding: 8px 10px;
         font-size: 16px;
     }
 
@@ -137,11 +137,24 @@
     }
 }
 
+.info-customer .right-info .btn-check-box {
+    label {
+        text-align: center;
+        font-size: 14px;
+        font-weight: 400;
+        color: rgb(104, 113, 118);
+        margin-left: 8px;
+    }
+}
+
 .search-start h3 {
     font-size: 14px;
     color: rgb(3, 18, 26);
     font-weight: 700;
     line-height: 20px;
+}
+.search-start {
+    width: 100%;
 }
 
 .right-info,
@@ -172,6 +185,55 @@
 
     .icon {
         height: 15px;
+    }
+}
+
+.amount-cus {
+    position: relative;
+    cursor: pointer;
+
+    .passenger-details {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: white;
+        border: 1px solid #ddd;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        z-index: 1;
+
+        .passenger-count {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 12px;
+            border-bottom: 1px solid #ddd;
+
+            &:last-child {
+                border-bottom: none;
+            }
+
+            button {
+                background: none;
+                color: var(--primary);
+                font-size: 28px;
+                padding: 4px 8px;
+                cursor: pointer;
+
+                &:first-child {
+                    margin-right: 8px;
+                }
+
+                &:last-child {
+                    margin-left: 8px;
+                }
+            }
+        }
+    }
+
+    &:focus-within .passenger-details,
+    &:hover .passenger-details {
+        display: block;
     }
 }
 

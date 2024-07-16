@@ -9,7 +9,9 @@ function Header() {
         <header className={cx('wrapper')}>
             <div className={cx('inner')}>
                 <div className={cx('logo')}>
-                    <img src={images.logo} alt="Traveloka" />
+                    <a href="/">
+                        <img src={images.logo} alt="Traveloka" />
+                    </a>
                 </div>
                 <ul className={cx('nav')}>
                     <li>

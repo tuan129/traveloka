@@ -15,6 +15,7 @@ function Button({
     disabled = false,
     small = false,
     large = false,
+    text = false,
     children,
     onClick,
     passProps,
@@ -49,6 +50,7 @@ function Button({
         primary,
         outline,
         disabled,
+        text,
         large,
         small,
     });
