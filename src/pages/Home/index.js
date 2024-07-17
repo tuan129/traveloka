@@ -27,23 +27,7 @@ import Menu from '~/components/Poper/Menu';
 
 const cx = classNames.bind(styles);
 
-const MENU_ITEMS = [
-    {
-        title: 'Phổ Thông',
-    },
-    {
-        title: 'Phổ thông đặt biệt',
-    },
-    {
-        title: 'Thương gia',
-    },
-    {
-        title: 'Hạng nhất',
-    },
-];
-
 function Home() {
-    const [start, setStart] = useState([]);
     const [from, setFrom] = useState('');
     const [to, setTo] = useState('');
     const [departureDate, setDepartureDate] = useState('');
@@ -54,19 +38,93 @@ function Home() {
     const [childCount, setChildCount] = useState(0);
     const [infantCount, setInfantCount] = useState(0);
     const [isPassengerInputActive, setIsPassengerInputActive] = useState(false);
+    const [searchResults, setSearchResults] = useState([]);
+    const [searchKeyword, setSearchKeyword] = useState('');
+    const [showSearchResults, setShowSearchResults] = useState(false);
+    const [selectedAirport, setSelectedAirport] = useState(null);
+    const [isSelectingOrigin, setIsSelectingOrigin] = useState(true);
     const [error, setError] = useState('');
 
     const navigate = useNavigate();
 
-    useEffect(() => {
-        setTimeout(() => {
-            setStart([]);
-        }, 0);
-    });
+    const MENU_ITEMS = [
+        {
+            title: 'Phổ Thông',
+            onClick: function () {
+                return setSeatClass('Phổ Thông');
+            },
+        },
+        {
+            title: 'Phổ thông đặt biệt',
+            onClick: function () {
+                return setSeatClass('Phổ thông đặt biệt');
+            },
+        },
+        {
+            title: 'Thương gia',
+            onClick: function () {
+                return setSeatClass('Thương gia');
+            },
+        },
+        {
+            title: 'Hạng nhất',
+            onClick: function () {
+                return setSeatClass('Hạng nhất');
+            },
+        },
+    ];
 
+    useEffect(() => {
+        const fetchSearchResults = async () => {
+            try {
+                const response = await fetch(`http://localhost:3001/api/search?keyword=${searchKeyword}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch search results');
+                }
+                const data = await response.json();
+                setSearchResults(data.results);
+                setShowSearchResults(true);
+            } catch (error) {
+                console.error('Error fetching search results:', error);
+                setSearchResults([]);
+                setShowSearchResults(false);
+            }
+        };
+
+        if (searchKeyword.length > 0) {
+            fetchSearchResults();
+        } else {
+            setShowSearchResults(false);
+        }
+    }, [searchKeyword]);
+
+    const handleFromInputChange = (e) => {
+        const keyword = e.target.value;
+        setFrom(keyword);
+        setSearchKeyword(keyword);
+    };
+
+    const handleToInputChange = (e) => {
+        const keyword = e.target.value;
+        setTo(keyword);
+        setSearchKeyword(keyword);
+    };
+
+    const handleAirportSelect = (airport) => {
+        setSelectedAirport(airport);
+        // Đặt giá trị cho từng trường tương ứng (from hoặc to)
+        if (isSelectingOrigin) {
+            setFrom(`${airport.city} (${airport.code})`);
+        } else {
+            setTo(`${airport.city} (${airport.code})`);
+        }
+        setShowSearchResults(false); // Ẩn kết quả tìm kiếm sau khi chọn
+    };
+
+    // handle tìm kiếm vé
     const handleSearch = async () => {
         if (!from || !to || !departureDate) {
-            setError('Vui lòng điền đầy đủ thông tin.');
+            setError('Vui lòng điền đầy đủ thông tin !!!');
             return;
         }
 
@@ -85,13 +143,70 @@ function Home() {
             setError('Không thể tìm thấy chuyến bay.');
         }
     };
-    const handlePassengerInputClick = () => {
-        setIsPassengerInputActive(!isPassengerInputActive);
+
+    //handle khi user click chọn số hành khách
+    const handlePassengerInputClick = (e) => {
+        e.stopPropagation();
+        setIsPassengerInputActive(true);
     };
 
+    // xử lý khi user blur input
     const handleBlur = (e) => {
         if (!e.currentTarget.contains(e.relatedTarget)) {
             setIsPassengerInputActive(false);
+        }
+    };
+
+    //handle khi tăng số lượng khách
+    const handleIncrease = (type) => {
+        if (type === 'adults') setAdultCount(adultCount + 1);
+        if (type === 'children') setChildCount(childCount + 1);
+        if (type === 'infants') setInfantCount(infantCount + 1);
+    };
+
+    //handle khi giảm số lượng khách tối thiểu ít hơn 1 người lớn
+    const handleDecrease = (type) => {
+        if (type === 'adults' && adultCount > 1) setAdultCount(adultCount - 1);
+        if (type === 'children' && childCount > 0) setChildCount(childCount - 1);
+        if (type === 'infants' && infantCount > 0) setInfantCount(infantCount - 1);
+    };
+
+    //ngăn cản cái hiệu ứng default của trang web
+    const preventDefault = (e) => {
+        // bỏ các hiệu ứng default
+        e.preventDefault();
+        //ngăn không cho nổi bọt ra thẻ cha
+        e.stopPropagation();
+    };
+
+    //handle khi chọn ngày đi nhỏ hơn ngày hiện tại
+    const handleDepartureDateChange = (e) => {
+        const getCurrentDateFormatted = () => {
+            const today = new Date();
+            const year = today.getFullYear();
+            // Tháng bắt đầu từ 0 nên cần +1
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            // Định dạng YYYY-MM-DD để có thể so sánh ngày
+            return `${year}-${month}-${day}`;
+        };
+
+        const selectedDate = e.target.value;
+
+        if (selectedDate >= getCurrentDateFormatted()) {
+            setDepartureDate(selectedDate);
+        } else {
+            setDepartureDate(getCurrentDateFormatted());
+        }
+    };
+
+    //handle khi chọn ngày về nhỏ hơn ngày đi
+    const handleReturnDateChange = (e) => {
+        const newReturnDate = e.target.value;
+        if (newReturnDate < departureDate) {
+            setReturnDate(departureDate);
+        } else {
+            setReturnDate(newReturnDate);
         }
     };
 
@@ -120,18 +235,28 @@ function Home() {
                             <div className={cx('info-customer')}>
                                 <div className={cx('right-info')}>
                                     {/* Departure */}
+
                                     <Tippy
                                         placement="bottom"
-                                        visible={start.length > 0}
                                         interactive
                                         render={(attrs) => (
                                             <div className={cx('search-start')} tabIndex="-1" {...attrs}>
                                                 <PoperWrapper>
                                                     <h3>Thành Phố Hoặc Sân Bay Phổ biến</h3>
-                                                    <CityItems />
-                                                    <CityItems />
-                                                    <CityItems />
-                                                    <CityItems />
+                                                    {showSearchResults && (
+                                                        <div className={cx('city-items-list')}>
+                                                            {searchResults.map((airport) => (
+                                                                // Nhận các props thông qua API và truyền vào CityItems để render
+                                                                <CityItems
+                                                                    key={airport.code}
+                                                                    name={airport.name}
+                                                                    city={airport.city}
+                                                                    country={airport.country}
+                                                                    onClick={() => handleAirportSelect(airport)}
+                                                                />
+                                                            ))}
+                                                        </div>
+                                                    )}
                                                 </PoperWrapper>
                                             </div>
                                         )}
@@ -143,7 +268,8 @@ function Home() {
                                                 type="text"
                                                 placeholder="Origin"
                                                 value={from}
-                                                onChange={(e) => setFrom(e.target.value)}
+                                                onChange={handleFromInputChange}
+                                                onFocus={() => setIsSelectingOrigin(true)}
                                             />
                                         </div>
                                     </Tippy>
@@ -154,16 +280,20 @@ function Home() {
                                         <FontAwesomeIcon className={cx('icon')} icon={faPlaneArrival} />
                                         <Tippy
                                             placement="bottom"
-                                            visible={start.length > 0}
                                             interactive
                                             render={(attrs) => (
                                                 <div className={cx('search-start')} tabIndex="-1" {...attrs}>
                                                     <PoperWrapper>
                                                         <h3>Thành Phố Hoặc Sân Bay Phổ biến</h3>
-                                                        <CityItems />
-                                                        <CityItems />
-                                                        <CityItems />
-                                                        <CityItems />
+                                                        {searchResults.map((airport) => (
+                                                            // Nhận các props thông qua API và truyền vào CityItems để render
+                                                            <CityItems
+                                                                key={airport.code}
+                                                                name={airport.name}
+                                                                city={airport.city}
+                                                                country={airport.country}
+                                                            />
+                                                        ))}
                                                     </PoperWrapper>
                                                 </div>
                                             )}
@@ -172,7 +302,8 @@ function Home() {
                                                 type="text"
                                                 placeholder="Destination"
                                                 value={to}
-                                                onChange={(e) => setTo(e.target.value)}
+                                                onChange={handleToInputChange}
+                                                onFocus={() => setIsSelectingOrigin(false)}
                                             />
                                         </Tippy>
                                     </div>
@@ -189,37 +320,85 @@ function Home() {
                                         <FontAwesomeIcon className={cx('icon')} icon={faUserLarge} />
                                         <input
                                             type="text"
-                                            placeholder={`${adultCount} Người lớn, ${childCount} Trẻ em, ${infantCount} Em bé`}
+                                            value={`${adultCount} Người lớn, ${childCount} Trẻ em, ${infantCount} Em bé`}
+                                            readOnly
                                         />
                                         {isPassengerInputActive && (
                                             <div className={cx('passenger-details')}>
                                                 <div className={cx('passenger-count')}>
-                                                    <span>
+                                                    <span className={cx('per-count')}>
                                                         Người lớn
                                                         <br /> <h6>(Từ 12 tuổi)</h6>
                                                     </span>
-                                                    <button onClick={() => setAdultCount(adultCount - 1)}>-</button>
+                                                    <button
+                                                        onMouseDown={(e) => {
+                                                            preventDefault(e);
+                                                            handleDecrease('adults');
+                                                        }}
+                                                    >
+                                                        -
+                                                    </button>
                                                     <span className={cx('person')}>{adultCount}</span>
-                                                    <button onClick={() => setAdultCount(adultCount + 1)}>+</button>
+                                                    <button
+                                                        onMouseDown={(e) => {
+                                                            preventDefault(e);
+                                                            handleIncrease('adults');
+                                                        }}
+                                                    >
+                                                        +
+                                                    </button>
                                                 </div>
                                                 <div className={cx('passenger-count')}>
-                                                    <span>
+                                                    <span className={cx('per-count')}>
                                                         Trẻ em
                                                         <br /> <h6>(Từ 2 - 11 tuổi)</h6>
                                                     </span>
-                                                    <button onClick={() => setChildCount(childCount - 1)}>-</button>
+                                                    <button
+                                                        onMouseDown={(e) => {
+                                                            preventDefault(e);
+                                                            handleDecrease('children');
+                                                        }}
+                                                    >
+                                                        -
+                                                    </button>
                                                     <span className={cx('person')}>{childCount}</span>
-                                                    <button onClick={() => setChildCount(childCount + 1)}>+</button>
+                                                    <button
+                                                        onMouseDown={(e) => {
+                                                            preventDefault(e);
+                                                            handleIncrease('children');
+                                                        }}
+                                                    >
+                                                        +
+                                                    </button>
                                                 </div>
+
+                                                {/* Start: Số lượng em Bé Dưới 2 tuổi */}
+
                                                 <div className={cx('passenger-count')}>
-                                                    <span>
+                                                    <span className={cx('per-count')}>
                                                         Em bé
                                                         <br /> <h6>(Dưới 2 tuổi)</h6>
                                                     </span>
-                                                    <button onClick={() => setInfantCount(infantCount - 1)}>-</button>
+                                                    <button
+                                                        onMouseDown={(e) => {
+                                                            preventDefault(e);
+                                                            handleDecrease('infants');
+                                                        }}
+                                                    >
+                                                        -
+                                                    </button>
                                                     <span className={cx('person')}>{infantCount}</span>
-                                                    <button onClick={() => setInfantCount(infantCount + 1)}>+</button>
+                                                    <button
+                                                        onMouseDown={(e) => {
+                                                            preventDefault(e);
+                                                            handleIncrease('infants');
+                                                        }}
+                                                    >
+                                                        +
+                                                    </button>
                                                 </div>
+
+                                                {/* End: Số lượng em bé dưới 2 tuổi */}
                                             </div>
                                         )}
                                     </div>
@@ -236,7 +415,7 @@ function Home() {
                                             type="date"
                                             placeholder="Origin"
                                             value={departureDate}
-                                            onChange={(e) => setDepartureDate(e.target.value)}
+                                            onChange={handleDepartureDateChange}
                                         />
                                     </div>
 
@@ -258,7 +437,7 @@ function Home() {
                                                     type="date"
                                                     placeholder="Destination"
                                                     value={returnDate}
-                                                    onChange={(e) => setReturnDate(e.target.value)}
+                                                    onChange={handleReturnDateChange}
                                                 />
                                             </div>
                                         )}
@@ -271,15 +450,12 @@ function Home() {
                                         <div className={cx('amount-cus')}>
                                             <p className={cx('name-input')}>Hạng ghế</p>
                                             <FontAwesomeIcon className={cx('icon')} icon={faChair} />
-                                            <input
-                                                type="text"
-                                                value={seatClass}
-                                                onChange={(e) => setSeatClass(e.MENU_ITEMS.title)}
-                                            />
+                                            <input type="text" value={seatClass} readOnly />
                                         </div>
                                     </Menu>
                                 </div>
                             </div>
+                            {error && <p className={cx('error')}>{error}</p>}
                             <Button
                                 large
                                 leftIcon={<FontAwesomeIcon className={cx('icon')} icon={faMagnifyingGlass} />}
@@ -288,7 +464,6 @@ function Home() {
                             >
                                 Tìm chuyến bay
                             </Button>
-                            {error && <p className={cx('error')}>{error}</p>}
                         </div>
                     </div>
                 </div>

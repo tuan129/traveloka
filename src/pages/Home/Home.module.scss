@@ -209,6 +209,27 @@
             padding: 8px 12px;
             border-bottom: 1px solid #ddd;
 
+            .per-count {
+                font-size: 14px;
+                font-weight: 600;
+                text-align: center;
+                line-height: 20px;
+                width: 31.99%;
+
+                h6 {
+                    font-size: 8px;
+                    font-weight: 500;
+                }
+            }
+
+            .person {
+                line-height: 40px;
+                font-size: 14px;
+                font-weight: 600;
+                width: 9.01%;
+                text-align: center;
+            }
+
             &:last-child {
                 border-bottom: none;
             }
@@ -219,6 +240,7 @@
                 font-size: 28px;
                 padding: 4px 8px;
                 cursor: pointer;
+                width: 24.99%;
 
                 &:first-child {
                     margin-right: 8px;
@@ -250,4 +272,13 @@
     &:hover {
         opacity: var(--opacity);
     }
+}
+
+.error {
+    color: #fe0007;
+    font-size: 14px;
+    font-weight: 600;
+    width: fit-content;
+    padding: 8px 16px;
+    align-self: flex-end;
 }

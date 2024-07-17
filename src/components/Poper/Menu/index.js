@@ -14,6 +14,7 @@ function Menu({ children, items = [] }) {
 
     return (
         <Tippy
+            trigger="click"
             placement="bottom"
             interactive
             render={(attrs) => (
