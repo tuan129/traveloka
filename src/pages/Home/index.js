@@ -7,14 +7,15 @@ import images from '~/assets/images';
 
 // component
 import styles from './Home.module.scss';
-import classNames from 'classnames/bind';
 import Button from '~/components/Button';
 import { Wrapper as PoperWrapper } from '~/components/Poper';
 import CityItems from '~/components/CityItems';
 
 //library
+import classNames from 'classnames/bind';
 import Tippy from '@tippyjs/react/headless';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome/index';
+import Menu from '~/components/Poper/Menu';
 import {
     faCalendarDay,
     faChair,
@@ -23,30 +24,51 @@ import {
     faPlaneDeparture,
     faUserLarge,
 } from '@fortawesome/free-solid-svg-icons';
-import Menu from '~/components/Poper/Menu';
 
 const cx = classNames.bind(styles);
 
 function Home() {
+    const navigate = useNavigate();
+    //lưu giữ trạng thái sân bay đi
     const [from, setFrom] = useState('');
+
+    //lưu giữ trạng thái sân bay đến
     const [to, setTo] = useState('');
+
+    //lưu giữ trạng thái ngày đi
     const [departureDate, setDepartureDate] = useState('');
+
+    //lưu giữ trạng thái ngày về
     const [returnDate, setReturnDate] = useState('');
+
+    //lưu giữ trạng thái hạng ghế
     const [seatClass, setSeatClass] = useState('Phổ Thông');
+
+    //lưu giữ trạng thái có phải vé khứ hồi hay không
     const [isRoundTrip, setIsRoundTrip] = useState(false);
+
+    //lưu giữ trạng thái số lượng người
     const [adultCount, setAdultCount] = useState(1);
     const [childCount, setChildCount] = useState(0);
     const [infantCount, setInfantCount] = useState(0);
+
+    //lưu giữ trạng thái người dùng đã click vô ô input để thay đổi số lượng người
     const [isPassengerInputActive, setIsPassengerInputActive] = useState(false);
+
+    //lưu giữ trạng thái các kết quả tìm kiếm khi lấy từ API lên
     const [searchResults, setSearchResults] = useState([]);
+
+    //lưu giữ trạng thái từ khóa tìm kiếm
     const [searchKeyword, setSearchKeyword] = useState('');
+
+    //lưu giữ trạng thái hiển thị kết quả tìm kiếm
     const [showSearchResults, setShowSearchResults] = useState(false);
-    const [selectedAirport, setSelectedAirport] = useState(null);
     const [isSelectingOrigin, setIsSelectingOrigin] = useState(true);
-    const [error, setError] = useState('');
 
-    const navigate = useNavigate();
+    //Thông báo lỗi
+    const [errorMessage, setErrorMessage] = useState('');
 
+    //Danh sách các hạng ghế
     const MENU_ITEMS = [
         {
             title: 'Phổ Thông',
@@ -74,6 +96,7 @@ function Home() {
         },
     ];
 
+    //Call Api khi user nhập từ khóa
     useEffect(() => {
         const fetchSearchResults = async () => {
             try {
@@ -111,7 +134,6 @@ function Home() {
     };
 
     const handleAirportSelect = (airport) => {
-        setSelectedAirport(airport);
         // Đặt giá trị cho từng trường tương ứng (from hoặc to)
         if (isSelectingOrigin) {
             setFrom(`${airport.city} (${airport.code})`);
@@ -121,10 +143,18 @@ function Home() {
         setShowSearchResults(false); // Ẩn kết quả tìm kiếm sau khi chọn
     };
 
+    // Hàm để hiển thị thông báo lỗi và tự động ẩn
+    const displayError = (message) => {
+        setErrorMessage(message);
+        setTimeout(() => {
+            setErrorMessage('');
+        }, 3000);
+    };
+
     // handle tìm kiếm vé
     const handleSearch = async () => {
         if (!from || !to || !departureDate) {
-            setError('Vui lòng điền đầy đủ thông tin !!!');
+            displayError('Vui lòng điền đầy đủ thông tin !!!');
             return;
         }
 
@@ -140,7 +170,7 @@ function Home() {
             const data = await response.json();
             navigate('/ticket-plane', { state: { flights: data.flights } });
         } catch (error) {
-            setError('Không thể tìm thấy chuyến bay.');
+            displayError('Không thể tìm thấy chuyến bay.');
         }
     };
 
@@ -292,6 +322,7 @@ function Home() {
                                                                 name={airport.name}
                                                                 city={airport.city}
                                                                 country={airport.country}
+                                                                onClick={() => handleAirportSelect(airport)}
                                                             />
                                                         ))}
                                                     </PoperWrapper>
@@ -455,7 +486,7 @@ function Home() {
                                     </Menu>
                                 </div>
                             </div>
-                            {error && <p className={cx('error')}>{error}</p>}
+                            {errorMessage && <p className={cx('error')}>{errorMessage}</p>}
                             <Button
                                 large
                                 leftIcon={<FontAwesomeIcon className={cx('icon')} icon={faMagnifyingGlass} />}

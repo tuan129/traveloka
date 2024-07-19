@@ -38,7 +38,7 @@ function Login() {
                 } else if (role === 'customer') {
                     navigate('/');
                 } else if (data.role === 'employee') {
-                    navigate('/employee-dashboard');
+                    navigate('/listfilght');
                 }
             }
         } catch (error) {
