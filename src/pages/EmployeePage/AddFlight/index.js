@@ -1,10 +1,11 @@
-// Hook
+//Hook
 import { useState } from 'react';
 
+//Styles
 import styles from './AddFlight.module.scss';
-import Button from '~/components/Button';
 
 // Component
+import Button from '~/components/Button';
 import CityItems from '~/components/CityItems';
 import AirlineItems from '~/components/AirlineItems';
 import { Wrapper as PoperWrapper } from '~/components/Poper';
@@ -24,6 +25,20 @@ function AddFlight() {
     const [airlineResults, setAirlineResults] = useState([]);
     const [airlines, setAirlines] = useState('');
     const [loading, setLoading] = useState(false);
+
+    // State để lấy các input filds
+    const [flightNumber, setFlightNumber] = useState('');
+    const [departureTime, setDepartureTime] = useState('');
+    const [arrivalTime, setArrivalTime] = useState('');
+    const [departureDate, setDepartureDate] = useState('');
+    const [economyTickets, setEconomyTickets] = useState('');
+    const [premiumEconomyTickets, setPremiumEconomyTickets] = useState('');
+    const [businessTickets, setBusinessTickets] = useState('');
+    const [firstClassTickets, setFirstClassTickets] = useState('');
+    const [economyPrice, setEconomyPrice] = useState('');
+    const [premiumEconomyPrice, setPremiumEconomyPrice] = useState('');
+    const [businessPrice, setBusinessPrice] = useState('');
+    const [firstClassPrice, setFirstClassPrice] = useState('');
 
     const fetchAirports = async (query) => {
         try {
@@ -91,14 +106,57 @@ function AddFlight() {
 
     const handleSelect = (item, type) => {
         if (type === 'departure') {
-            setDepartureCity(`${item.city} (${item.code})`);
+            setDepartureCity(`${item.name}`);
         } else if (type === 'arrival') {
-            setArrivalCity(`${item.city} (${item.code})`);
+            setArrivalCity(`${item.name}`);
         } else if (type === 'airlines') {
-            setAirlines(`${item.fullName} (${item.code})`);
+            setAirlines(`${item.fullName}`);
         }
         setShowSearchResults(false);
         setShowAirlineResults(false);
+    };
+
+    const handleAddFlight = async () => {
+        const flightData = {
+            flightNumber,
+            airlines,
+            departureCity,
+            arrivalCity,
+            departureTime,
+            arrivalTime,
+            departureDate,
+            tickets: {
+                economy: economyTickets,
+                premiumEconomy: premiumEconomyTickets,
+                business: businessTickets,
+                firstClass: firstClassTickets,
+            },
+            prices: {
+                economy: economyPrice,
+                premiumEconomy: premiumEconomyPrice,
+                business: businessPrice,
+                firstClass: firstClassPrice,
+            },
+        };
+
+        try {
+            const response = await fetch('http://localhost:3001/api/add-flight', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(flightData),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to add flight');
+            }
+
+            // Handle successful response
+            console.log('Flight added successfully');
+        } catch (error) {
+            console.error('Error adding flight:', error);
+        }
     };
 
     return (
@@ -109,13 +167,17 @@ function AddFlight() {
                     <div className={cx('flight-info')}>
                         <label>
                             <span>- Số hiệu chuyến bay:</span>
-                            <input type="text" placeholder="Flight Number" />
+                            <input
+                                type="text"
+                                placeholder="Flight Number"
+                                value={flightNumber}
+                                onChange={(e) => setFlightNumber(e.target.value)}
+                            />
                         </label>
                         <div>
                             <label>
                                 <span>- Hãng hàng không:</span>
                                 <Tippy
-                                    className={cx('asdasd')}
                                     placement="bottom-start"
                                     interactive
                                     visible={showAirlineResults && airlines.length > 0}
@@ -195,22 +257,52 @@ function AddFlight() {
 
                         <label>
                             <span>- Thời gian cất cánh:</span>
-                            <input type="time" placeholder="Departure Time" />
+                            <input
+                                type="time"
+                                placeholder="Departure Time"
+                                value={departureTime}
+                                onChange={(e) => setDepartureTime(e.target.value)}
+                            />
                         </label>
                         <label className={cx('amount-ticket')}>
                             <span>- Số lượng vé:</span>
                             <div className={cx('level-ticket')}>
-                                <input type="text" placeholder="Phổ thông" />
-                                <input type="text" placeholder="Phổ thông đặc biệt" />
-                                <input type="text" placeholder="Thương gia" />
-                                <input type="text" placeholder="Hạng nhất" />
+                                <input
+                                    type="text"
+                                    placeholder="Phổ thông"
+                                    value={economyTickets}
+                                    onChange={(e) => setEconomyTickets(e.target.value)}
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Phổ thông đặc biệt"
+                                    value={premiumEconomyTickets}
+                                    onChange={(e) => setPremiumEconomyTickets(e.target.value)}
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Thương gia"
+                                    value={businessTickets}
+                                    onChange={(e) => setBusinessTickets(e.target.value)}
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Hạng nhất"
+                                    value={firstClassTickets}
+                                    onChange={(e) => setFirstClassTickets(e.target.value)}
+                                />
                             </div>
                         </label>
                     </div>
                     <div className={cx('flight-info')}>
                         <label>
                             <span>- Ngày khởi hành:</span>
-                            <input type="date" placeholder="Departure Date" />
+                            <input
+                                type="date"
+                                placeholder="Departure Date"
+                                value={departureDate}
+                                onChange={(e) => setDepartureDate(e.target.value)}
+                            />
                         </label>
                         <div>
                             <label>
@@ -254,20 +346,45 @@ function AddFlight() {
                         </div>
                         <label>
                             <span>- Thời gian đến:</span>
-                            <input type="time" placeholder="Arrival Time" />
+                            <input
+                                type="time"
+                                placeholder="Arrival Time"
+                                value={arrivalTime}
+                                onChange={(e) => setArrivalTime(e.target.value)}
+                            />
                         </label>
                         <label className={cx('price-ticket')}>
                             <span>- Giá vé:</span>
                             <div className={cx('level-ticket')}>
-                                <input type="text" placeholder="Phổ thông" />
-                                <input type="text" placeholder="Phổ thông đặc biệt" />
-                                <input type="text" placeholder="Thương gia" />
-                                <input type="text" placeholder="Hạng nhất" />
+                                <input
+                                    type="text"
+                                    placeholder="Phổ thông"
+                                    value={economyPrice}
+                                    onChange={(e) => setEconomyPrice(e.target.value)}
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Phổ thông đặc biệt"
+                                    value={premiumEconomyPrice}
+                                    onChange={(e) => setPremiumEconomyPrice(e.target.value)}
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Thương gia"
+                                    value={businessPrice}
+                                    onChange={(e) => setBusinessPrice(e.target.value)}
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Hạng nhất"
+                                    value={firstClassPrice}
+                                    onChange={(e) => setFirstClassPrice(e.target.value)}
+                                />
                             </div>
                         </label>
                     </div>
                 </div>
-                <Button primary className={cx('btn-add-flight')}>
+                <Button primary className={cx('btn-add-flight')} onClick={handleAddFlight}>
                     Add
                 </Button>
             </div>

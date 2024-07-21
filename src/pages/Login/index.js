@@ -31,20 +31,27 @@ function Login() {
             const data = await response.json();
 
             if (response.status === 200) {
-                const { role } = data;
+                const { role, token } = data;
+
+                // Lưu token vào localStorage
+                localStorage.setItem('token', token);
+
                 // Chuyển hướng người dùng dựa trên vai trò của họ
                 if (role === 'admin') {
                     navigate('/admin-dashboard');
                 } else if (role === 'customer') {
                     navigate('/');
-                } else if (data.role === 'employee') {
+                } else if (role === 'employee') {
                     navigate('/listfilght');
                 }
+            } else {
+                setError(data.message || 'Đăng nhập thất bại.');
             }
         } catch (error) {
-            setError('Email hoặc mật khẩu không chính xác.');
+            setError('Đã xảy ra lỗi. Vui lòng thử lại.');
         }
     };
+
     return (
         <div className={cx('wrapper')}>
             <div className={cx('login')}>

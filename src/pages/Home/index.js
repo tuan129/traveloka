@@ -164,11 +164,20 @@ function Home() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ from, to, departureDate, returnDate: isRoundTrip ? returnDate : '', seatClass }),
+                body: JSON.stringify({
+                    from,
+                    to,
+                    departureDate,
+                    returnDate: isRoundTrip ? returnDate : '',
+                    seatClass,
+                    adultCount,
+                    childCount,
+                    infantCount,
+                }),
             });
 
             const data = await response.json();
-            navigate('/ticket-plane', { state: { flights: data.flights } });
+            navigate('/ticketplane', { state: { flights: data.flights } });
         } catch (error) {
             displayError('Không thể tìm thấy chuyến bay.');
         }
