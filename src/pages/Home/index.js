@@ -287,10 +287,8 @@ function Home() {
                                                             {searchResults.map((airport) => (
                                                                 // Nhận các props thông qua API và truyền vào CityItems để render
                                                                 <CityItems
-                                                                    key={airport.code}
-                                                                    name={airport.name}
-                                                                    city={airport.city}
-                                                                    country={airport.country}
+                                                                    key={airport.id}
+                                                                    data={airport}
                                                                     onClick={() => handleAirportSelect(airport)}
                                                                 />
                                                             ))}
@@ -327,10 +325,8 @@ function Home() {
                                                         {searchResults.map((airport) => (
                                                             // Nhận các props thông qua API và truyền vào CityItems để render
                                                             <CityItems
-                                                                key={airport.code}
-                                                                name={airport.name}
-                                                                city={airport.city}
-                                                                country={airport.country}
+                                                                key={airport.id}
+                                                                data={airport}
                                                                 onClick={() => handleAirportSelect(airport)}
                                                             />
                                                         ))}

@@ -6,18 +6,18 @@ import { faPlane } from '@fortawesome/free-solid-svg-icons';
 
 const cx = classNames.bind(styles);
 
-function CityItems({ name, code, city, country, onClick }) {
+function CityItems({ data, onClick }) {
     return (
         <div className={cx('wrapper')} onClick={onClick}>
             <div className={cx('info')}>
                 <FontAwesomeIcon className={cx('icon')} icon={faPlane} />
                 <div className={cx('info-airfield')}>
                     <div className={cx('name-airfield')}>
-                        <p>{name}</p>
-                        <span className={cx('code-airfield')}>{code}</span>
+                        <p>{data.name}</p>
+                        <span className={cx('code-airfield')}>{data.code}</span>
                     </div>
                     <p className={cx('name-country')}>
-                        {city}, {country}
+                        {data.city}, {data.country}
                     </p>
                 </div>
             </div>

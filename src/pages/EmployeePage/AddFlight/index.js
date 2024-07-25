@@ -1,5 +1,5 @@
 //Hook
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 
 //Styles
 import styles from './AddFlight.module.scss';
@@ -9,10 +9,13 @@ import Button from '~/components/Button';
 import CityItems from '~/components/CityItems';
 import AirlineItems from '~/components/AirlineItems';
 import { Wrapper as PoperWrapper } from '~/components/Poper';
+import Context from '~/components/useContext/Context';
 
 // Library
 import classNames from 'classnames/bind';
 import Tippy from '@tippyjs/react/headless';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
@@ -25,6 +28,8 @@ function AddFlight() {
     const [airlineResults, setAirlineResults] = useState([]);
     const [airlines, setAirlines] = useState('');
     const [loading, setLoading] = useState(false);
+    const { addFlight } = useContext(Context);
+    const navigate = useNavigate();
 
     // State để lấy các input filds
     const [flightNumber, setFlightNumber] = useState('');
@@ -140,22 +145,37 @@ function AddFlight() {
         };
 
         try {
-            const response = await fetch('http://localhost:3001/api/add-flight', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(flightData),
-            });
+            // Gửi dữ liệu đến backend
 
-            if (!response.ok) {
-                throw new Error('Failed to add flight');
-            }
+            // await axios.post('http://localhost:3001/api/flights', flightData);
 
-            // Handle successful response
-            console.log('Flight added successfully');
+            // Nếu thành công, làm trống form
+            setFlightNumber('');
+            setAirlines('');
+            setDepartureCity('');
+            setArrivalCity('');
+            setDepartureTime('');
+            setArrivalTime('');
+            setDepartureDate('');
+            setEconomyTickets('');
+            setPremiumEconomyTickets('');
+            setBusinessTickets('');
+            setFirstClassTickets('');
+            setEconomyPrice('');
+            setPremiumEconomyPrice('');
+            setBusinessPrice('');
+            setFirstClassPrice('');
+
+            // Thêm dữ liệu vào context
+            addFlight(flightData);
+            // Chuyển đến trang danh sách chuyến bay
+            navigate('/listfilght');
+            // Có thể thông báo thành công
+            alert('Flight added successfully!');
         } catch (error) {
             console.error('Error adding flight:', error);
+            // Có thể thông báo lỗi nếu cần
+            alert('Failed to add flight. Please try again.');
         }
     };
 
@@ -191,10 +211,8 @@ function AddFlight() {
                                                     ) : (
                                                         airlineResults.map((airline) => (
                                                             <AirlineItems
-                                                                key={airline.code}
-                                                                code={airline.code}
-                                                                name={airline.name}
-                                                                fullName={airline.fullName}
+                                                                key={airline.id}
+                                                                data={airline}
                                                                 onClick={() => handleSelect(airline, 'airlines')}
                                                             />
                                                         ))
@@ -231,10 +249,8 @@ function AddFlight() {
                                                     ) : (
                                                         searchResults.map((airport) => (
                                                             <CityItems
-                                                                key={airport.code}
-                                                                name={airport.name}
-                                                                city={airport.city}
-                                                                country={airport.country}
+                                                                key={airport.id}
+                                                                data={airport}
                                                                 onClick={() => handleSelect(airport, 'departure')}
                                                             />
                                                         ))
@@ -321,10 +337,8 @@ function AddFlight() {
                                                     ) : (
                                                         searchResults.map((airport) => (
                                                             <CityItems
-                                                                key={airport.code}
-                                                                name={airport.name}
-                                                                city={airport.city}
-                                                                country={airport.country}
+                                                                key={airport.id}
+                                                                data={airport}
                                                                 onClick={() => handleSelect(airport, 'arrival')}
                                                             />
                                                         ))
