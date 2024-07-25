@@ -32,7 +32,7 @@ function HeaderEmployee() {
                     <Button outline to="/viewcustomer" className={cx('btn-nav-bar')}>
                         Xem thông tin khách hàng
                     </Button>
-                    <Button outline to="/revenuestats" className={cx('btn-nav-bar')}>
+                    <Button outline to="/statistics" className={cx('btn-nav-bar')}>
                         Thống kê doanh thu
                     </Button>
                     <Button primary className={cx('btn-nav-bar')} onClick={handleLogout}>

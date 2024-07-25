@@ -2,7 +2,7 @@ import { Home, Login, Register, Info, TicketPlane } from '~/pages';
 
 import DefaultLayoutEmployee from '~/components/Layout/DefaultLayoutEmployee';
 
-import { AddFlight,ListFilght, Revenuestats, Viewcustomer } from '~/pages';
+import { AddFlight, ListFilght, Statistics, Viewcustomer } from '~/pages';
 
 const publicRoutes = [
     { path: '/', component: Home },
@@ -12,7 +12,7 @@ const publicRoutes = [
     { path: '/ticketPlane', component: TicketPlane },
     { path: '/listfilght', component: ListFilght, layout: DefaultLayoutEmployee },
     { path: '/addflight', component: AddFlight, layout: DefaultLayoutEmployee },
-    { path: '/revenuestats', component: Revenuestats, layout: DefaultLayoutEmployee },
+    { path: '/statistics', component: Statistics, layout: DefaultLayoutEmployee },
     { path: '/viewcustomer', component: Viewcustomer, layout: DefaultLayoutEmployee },
 ];
 const privateRoutes = [];

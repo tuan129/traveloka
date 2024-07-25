@@ -1,9 +1,16 @@
+//Hook
 import { useEffect, useState, useContext } from 'react';
+
+//Component
 import Button from '~/components/Button';
+import Context from '~/components/useContext/Context';
+
+// Styles
 import styles from './Viewcustomer.module.scss';
+
+// Library
 import classNames from 'classnames/bind';
 import axios from 'axios';
-import Context from '~/components/useContext/Context';
 
 const cx = classNames.bind(styles);
 
