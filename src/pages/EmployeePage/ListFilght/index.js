@@ -82,7 +82,7 @@ function ListFlight() {
                                                 />
                                             </label>
                                             <label>
-                                                Số hiệu chuyến bay:
+                                                Mã chuyến bay:
                                                 <input
                                                     type="text"
                                                     value={editData.flightNumber}

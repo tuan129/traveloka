@@ -186,7 +186,7 @@ function AddFlight() {
                 <div className={cx('add-flight')}>
                     <div className={cx('flight-info')}>
                         <label>
-                            <span>- Số hiệu chuyến bay:</span>
+                            <span>- Mã chuyến bay:</span>
                             <input
                                 type="text"
                                 placeholder="Flight Number"
