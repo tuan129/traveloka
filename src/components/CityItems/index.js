@@ -13,7 +13,9 @@ function CityItems({ data, onClick }) {
                 <FontAwesomeIcon className={cx('icon')} icon={faPlane} />
                 <div className={cx('info-airfield')}>
                     <div className={cx('name-airfield')}>
+                        {/* tên sân bay */}
                         <p>{data.name}</p>
+                        {/* mã sân bay */}
                         <span className={cx('code-airfield')}>{data.code}</span>
                     </div>
                     <p className={cx('name-country')}>

@@ -55,7 +55,7 @@ function Viewcustomer() {
                                 {customers
                                     .filter((customer) => customer.flightNumber === flight.flightNumber)
                                     .map((customer) => (
-                                        <li key={customer.ticketCode} className={cx('customer-item')}>
+                                        <li key={customer.id} className={cx('customer-item')}>
                                             <div className={cx('customer-info')}>
                                                 <p className={cx('name')}>Tên Khách hàng: {customer.name}</p>
                                                 <p className={cx('email')}>Email: {customer.email}</p>

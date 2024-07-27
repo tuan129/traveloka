@@ -165,19 +165,40 @@ function Home() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
+                    //Đi từ đâu
                     from,
+
+                    //Đi đến đâu
                     to,
+
+                    //Ngày đi
                     departureDate,
+
+                    //Ngày về (nếu có)
                     returnDate: isRoundTrip ? returnDate : '',
+
+                    //Hạng ghế
                     seatClass,
+
+                    //Sô lượng người lớn
                     adultCount,
+
+                    //Sô lượng trẻ em
                     childCount,
+
+                    //Sô lượng em bé
                     infantCount,
                 }),
             });
 
             const data = await response.json();
-            navigate('/ticketplane', { state: { flights: data.flights } });
+
+            // Kiểm tra nếu có dữ liệu chuyến bay trả về
+            if (data.flights && data.flights.length > 0) {
+                navigate('/ticketplane', { state: { flights: data.flights } });
+            } else {
+                displayError('Không tìm thấy chuyến bay phù hợp.');
+            }
         } catch (error) {
             displayError('Không thể tìm thấy chuyến bay.');
         }
