@@ -20,7 +20,7 @@
         width: 60px;
         color: #fff;
         text-align: center;
-        background-color: #ef5122;
+        background-color: var(--orange);
         animation: growth ease-in 0.5s;
         --percent: 10;
         height: var(--percent);

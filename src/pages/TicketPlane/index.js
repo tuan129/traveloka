@@ -1,18 +1,19 @@
-//Hook
+// Hook
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-//library
+// library
 import classNames from 'classnames/bind';
 import styles from './TicketPlane.module.scss';
 
-//component
+// component
 import Button from '~/components/Button';
 
 const cx = classNames.bind(styles);
 
 function TicketPlane() {
     const location = useLocation();
+    const navigate = useNavigate();
     const flights = location.state?.flights || [];
 
     const [selectedFlight, setSelectedFlight] = useState(null);
@@ -25,6 +26,18 @@ function TicketPlane() {
             // Nếu chuyến bay khác được chọn thì hiển thị chi tiết của chuyến bay đó
             setSelectedFlight(flight);
         }
+    };
+
+    const handleSelectClick = (flight) => {
+        // Điều hướng đến trang InfoCustomer và truyền thông tin chuyến bay cùng số lượng hành khách
+        navigate('/infocustomer', {
+            state: {
+                flight,
+                adultCount: location.state?.adultCount,
+                childCount: location.state?.childCount,
+                infantCount: location.state?.infantCount,
+            },
+        });
     };
 
     return (
@@ -49,7 +62,9 @@ function TicketPlane() {
                                 <Button className={cx('details')} onClick={() => handleDetailClick(flight)}>
                                     Chi tiết
                                 </Button>
-                                <Button primary>Chọn</Button>
+                                <Button primary onClick={() => handleSelectClick(flight)}>
+                                    Chọn
+                                </Button>
                             </div>
                             {selectedFlight && selectedFlight.flightNumber === flight.flightNumber && (
                                 <div className={cx('flight-details')}>
