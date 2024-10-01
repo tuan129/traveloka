@@ -83,7 +83,7 @@ function Login() {
                     </p>
                     <p>
                         Forget Password ?
-                        <Button text to="/register">
+                        <Button text to="/forgetpass">
                             Reset password
                         </Button>
                     </p>
