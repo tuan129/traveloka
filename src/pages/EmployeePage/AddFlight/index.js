@@ -14,7 +14,7 @@ import Context from '~/components/useContext/Context';
 // Library
 import classNames from 'classnames/bind';
 import Tippy from '@tippyjs/react/headless';
-import axios from 'axios';
+// import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
